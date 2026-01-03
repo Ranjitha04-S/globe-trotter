@@ -236,7 +236,7 @@ const MyTrips = () => {
                             </div>
                         )}
                     </>
-                )}
+                )} 
             </div>
         </div>
     );

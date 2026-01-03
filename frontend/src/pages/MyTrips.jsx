@@ -126,10 +126,13 @@ const MyTrips = () => {
                                 <button
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
-                                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${activeTab === tab.id
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
+                                    className={`px-6 py-2 rounded-lg font-medium transition-colors border-2`}
+                                    style={{
+                                        backgroundColor: '#347BED',
+                                        color: 'white',
+                                        borderColor: '#347BED',
+                                        opacity: activeTab === tab.id ? 1 : 0.7
+                                    }}
                                 >
                                     {tab.label}
                                 </button>

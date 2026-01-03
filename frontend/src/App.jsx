@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 function App() {
   const [modal, setModal] = useState(null); // null | 'login' | 'register' | 'addplan'
   const [activeNav, setActiveNav] = useState('Dashboard');
+  const [stats, setStats] = useState(null);
 
   useEffect(() => {
     const showLoginModal = () => setModal('login');
@@ -37,17 +38,61 @@ function App() {
     };
   }, []);
 
+  // Get user name from localStorage
+  const getUserName = () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      return user?.name || '';
+    } catch {
+      return '';
+    }
+  };
+
+  const [userName, setUserName] = useState(getUserName());
+
+  useEffect(() => {
+    const handleAuthChanged = () => {
+      setUserName(getUserName());
+    };
+    window.addEventListener('auth-changed', handleAuthChanged);
+    return () => window.removeEventListener('auth-changed', handleAuthChanged);
+  }, []);
+
+  // Fetch stats for dashboard cards
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setStats(null);
+          return;
+        }
+        const res = await fetch('http://localhost:5000/api/users/profile', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('Failed to fetch stats');
+        const data = await res.json();
+        setStats(data.stats);
+      } catch {
+        setStats(null);
+      }
+    };
+    fetchStats();
+    window.addEventListener('auth-changed', fetchStats);
+    return () => window.removeEventListener('auth-changed', fetchStats);
+  }, []);
+
   // Render active page based on navigation
   const renderActivePage = () => {
     switch (activeNav) {
       case 'Dashboard':
-        return <HeroSection onPlanNewTrip={() => setModal('addplan')} />;
+        return <HeroSection onPlanNewTrip={() => setModal('addplan')} userName={userName} stats={stats} />;
       case 'My Trips':
         return <MyTrips />;
       case 'Profile':
         return <Profile />;
       default:
-        return <HeroSection onPlanNewTrip={() => setModal('addplan')} />;
+        return <HeroSection onPlanNewTrip={() => setModal('addplan')} userName={userName} stats={stats} />;
     }
   };
 

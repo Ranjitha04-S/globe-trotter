@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import TripCard from '../components/TripCard/TripCard';
 import { tripAPI } from '../services/api';
+import notify from '../utils/notify';
 
 const MyTrips = () => {
     const [trips, setTrips] = useState([]);
@@ -78,12 +79,20 @@ const MyTrips = () => {
     };
 
     const handleDelete = async (trip) => {
-        if (window.confirm(`Are you sure you want to delete "${trip.name}"?`)) {
+        const result = await notify.confirm({
+            title: 'Delete Trip',
+            text: `Are you sure you want to delete "${trip.name}"? This action cannot be undone.`,
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            icon: 'warning',
+        });
+        if (result.isConfirmed) {
             try {
                 await tripAPI.delete(trip._id);
                 setTrips(trips.filter(t => t._id !== trip._id));
+                notify.success('Deleted', 'Trip deleted successfully');
             } catch (err) {
-                alert(err.response?.data?.error || 'Failed to delete trip');
+                notify.error('Delete failed', err.response?.data?.error || 'Failed to delete trip');
             }
         }
     };

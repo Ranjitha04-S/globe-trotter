@@ -44,13 +44,31 @@ export default function AddPlan({ onBack }) {
         formData.append('images', img);
       });
       
-      const res = await fetch('http://localhost:5000/api/trips', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      const data = await res.json();
-			setError(err.message);
+			const res = await fetch('http://localhost:5000/api/trips', {
+				method: 'POST',
+				body: formData,
+			});
+			if (!res.ok) {
+				const errorData = await res.json();
+				setError(errorData.message || 'Failed to create trip.');
+				alert(errorData.message || 'Failed to create trip.');
+			} else {
+				setSuccess('Trip created successfully!');
+				alert('Trip created successfully!');
+				setShowSuccessPopup(true);
+				setForm({
+					name: '',
+					destination: '',
+					startDate: '',
+					endDate: '',
+					budget: '',
+					description: '',
+				});
+				setImages([]);
+			}
+		} catch (err) {
+			setError(err.message || 'An error occurred.');
+			alert(err.message || 'An error occurred.');
 		} finally {
 			setLoading(false);
 		}
@@ -60,7 +78,7 @@ export default function AddPlan({ onBack }) {
 		<div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 md:p-8 relative mx-auto my-8 md:my-16" style={{ maxHeight: '90vh', overflowY: 'auto' }}>
 			{/* Success Popup Modal */}
 			{showSuccessPopup && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+				<div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/10">
 					<div className="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full flex flex-col items-center relative">
 						<button className="absolute top-3 right-3 text-gray-400 hover:text-gray-700" onClick={() => setShowSuccessPopup(false)}>
 							<X size={24} />

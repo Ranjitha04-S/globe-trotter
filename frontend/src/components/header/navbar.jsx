@@ -1,19 +1,51 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, Map, Search, Calendar, User, Menu } from 'lucide-react';
-
-const navLinks = [
-	{ name: 'Dashboard', icon: <Home size={20} />, href: '#' },
-	{ name: 'My Trips', icon: <Map size={20} />, href: '#' },
-	{ name: 'Explore', icon: <Search size={20} />, href: '#' },
-	{ name: 'Calendar', icon: <Calendar size={20} />, href: '#' },
-	{ name: 'Profile', icon: <User size={20} />, href: '#' },
-	{ name: 'Login', icon: null, href: '#', action: () => window.dispatchEvent(new CustomEvent('show-login-modal')) },
-	{ name: 'Register', icon: null, href: '#', action: () => window.dispatchEvent(new CustomEvent('show-register-modal')) },
-];
 
 export default function Navbar({ onNavClick, activeNav }) {
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(
+		!!localStorage.getItem('token')
+	);
+
+	useEffect(() => {
+		const handleAuthChanged = (event) => {
+			if (event.detail && typeof event.detail.isAuthenticated === 'boolean') {
+				setIsAuthenticated(event.detail.isAuthenticated);
+			} else {
+				setIsAuthenticated(!!localStorage.getItem('token'));
+			}
+		};
+
+		window.addEventListener('auth-changed', handleAuthChanged);
+		return () => window.removeEventListener('auth-changed', handleAuthChanged);
+	}, []);
+
+	const handleLogout = () => {
+		localStorage.removeItem('token');
+		localStorage.removeItem('user');
+		setIsAuthenticated(false);
+		window.dispatchEvent(
+			new CustomEvent('auth-changed', { detail: { isAuthenticated: false } })
+		);
+		if (onNavClick) onNavClick('Dashboard');
+	};
+
+	const authedLinks = [
+		{ name: 'Dashboard', icon: <Home size={20} />, href: '#' },
+		{ name: 'My Trips', icon: <Map size={20} />, href: '#' },
+		{ name: 'Explore', icon: <Search size={20} />, href: '#' },
+		{ name: 'Calendar', icon: <Calendar size={20} />, href: '#' },
+		{ name: 'Profile', icon: <User size={20} />, href: '#' },
+		{ name: 'Logout', icon: null, href: '#', action: handleLogout },
+	];
+
+	const guestLinks = [
+		{ name: 'Login', icon: null, href: '#', action: () => window.dispatchEvent(new CustomEvent('show-login-modal')) },
+		{ name: 'Register', icon: null, href: '#', action: () => window.dispatchEvent(new CustomEvent('show-register-modal')) },
+	];
+
+	const navLinks = isAuthenticated ? authedLinks : guestLinks;
 
 	return (
 		<nav className="bg-white shadow-sm w-full fixed top-0 left-0 z-50">

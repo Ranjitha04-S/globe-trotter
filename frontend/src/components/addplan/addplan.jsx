@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Save, X } from 'lucide-react';
+import { tripAPI } from '../../services/api';
 
 export default function AddPlan({ onBack }) {
 	const [form, setForm] = useState({
@@ -9,6 +10,9 @@ export default function AddPlan({ onBack }) {
 		endDate: '',
 		budget: '',
 		description: '',
+		status: 'planning',
+		stops: 1,
+		travelers: 1,
 	});
 	const [images, setImages] = useState([]); // Array of File
 	const [loading, setLoading] = useState(false);
@@ -30,27 +34,40 @@ export default function AddPlan({ onBack }) {
 		setError('');
 		setSuccess('');
 		try {
-      // Always use FormData for consistency
-      const formData = new FormData();
-      formData.append('name', form.name);
-      formData.append('destination', form.destination);
-      formData.append('startDate', form.startDate);
-      formData.append('endDate', form.endDate);
-      formData.append('budget', form.budget);
-      formData.append('description', form.description);
-      
-      // Add images if present
-      images.forEach((img) => {
-        formData.append('images', img);
-      });
-      
-      const res = await fetch('http://localhost:5000/api/trips', {
-        method: 'POST',
-        body: formData,
-      });
-      
-      const data = await res.json();
-			setError(err.message);
+			// Always use FormData for consistency
+			const formData = new FormData();
+			formData.append('name', form.name);
+			formData.append('destination', form.destination);
+			formData.append('startDate', form.startDate);
+			formData.append('endDate', form.endDate);
+			formData.append('budget', form.budget);
+			formData.append('description', form.description);
+			formData.append('status', form.status);
+			formData.append('stops', form.stops);
+			formData.append('travelers', form.travelers);
+			
+			// Add images if present
+			images.forEach((img) => {
+				formData.append('images', img);
+			});
+			
+			await tripAPI.create(formData);
+			setShowSuccessPopup(true);
+			// Reset form
+			setForm({
+				name: '',
+				destination: '',
+				startDate: '',
+				endDate: '',
+				budget: '',
+				description: '',
+				status: 'planning',
+				stops: 1,
+				travelers: 1,
+			});
+			setImages([]);
+		} catch (err) {
+			setError(err.response?.data?.error || err.message || 'Failed to create trip');
 		} finally {
 			setLoading(false);
 		}
@@ -117,6 +134,29 @@ export default function AddPlan({ onBack }) {
 				<div>
 					<label className="block text-gray-700 font-medium mb-1">Budget (USD)</label>
 					<input name="budget" type="number" placeholder="2500" value={form.budget} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400" required />
+				</div>
+				
+				{/* Additional Fields */}
+				<div className="flex flex-col md:flex-row gap-4">
+					<div className="flex-1">
+						<label className="block text-gray-700 font-medium mb-1">Number of Stops</label>
+						<input name="stops" type="number" min="1" placeholder="1" value={form.stops} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400" />
+					</div>
+					<div className="flex-1">
+						<label className="block text-gray-700 font-medium mb-1">Number of Travelers</label>
+						<input name="travelers" type="number" min="1" placeholder="1" value={form.travelers} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400" />
+					</div>
+				</div>
+				
+				{/* Status */}
+				<div>
+					<label className="block text-gray-700 font-medium mb-1">Trip Status</label>
+					<select name="status" value={form.status} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700">
+						<option value="planning">Planning</option>
+						<option value="confirmed">Confirmed</option>
+						<option value="draft">Draft</option>
+						<option value="completed">Completed</option>
+					</select>
 				</div>
 						{/* Description */}
 						<div>

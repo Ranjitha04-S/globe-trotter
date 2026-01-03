@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import { authAPI } from "../../services/api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,11 +10,27 @@ export default function Login() {
     e.preventDefault();
     setError("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await authAPI.login({
         email,
         password
       });
+
+      // Store token and basic user info
       localStorage.setItem("token", res.data.token);
+      if (res.data.user) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+      }
+
+      // Notify app/navbar about auth change
+      window.dispatchEvent(
+        new CustomEvent("auth-changed", {
+          detail: { isAuthenticated: true, user: res.data.user }
+        })
+      );
+
+      // Close modal and navigate to My Trips
+      window.dispatchEvent(new Event("login-success"));
+
       alert("Login successful");
     } catch (err) {
       if (err.response && err.response.data && err.response.data.message) {
@@ -55,7 +71,9 @@ export default function Login() {
           <button
             type="button"
             className="text-blue-600 underline"
-            onClick={() => window.dispatchEvent(new CustomEvent('show-register'))}
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent("show-register-modal"))
+            }
           >
             Register
           </button>

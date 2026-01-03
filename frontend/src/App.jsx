@@ -8,6 +8,8 @@ import Register from './components/Login/Register';
 import { useEffect, useState } from 'react';
 import HeroSection from './components/Dashboard/herosection';
 import AddPlan from './components/addplan/addplan';
+import MyTrips from './pages/MyTrips';
+import Profile from './pages/Profile';
 
 function App() {
   const [modal, setModal] = useState(null); // null | 'login' | 'register' | 'addplan'
@@ -20,19 +22,41 @@ function App() {
     window.addEventListener('show-login-modal', showLoginModal);
     window.addEventListener('show-register-modal', showRegisterModal);
     window.addEventListener('show-addplan-modal', showAddPlanModal);
+
+    const handleLoginSuccess = () => {
+      setModal(null);
+      setActiveNav('My Trips');
+    };
+
+    window.addEventListener('login-success', handleLoginSuccess);
     return () => {
       window.removeEventListener('show-login-modal', showLoginModal);
       window.removeEventListener('show-register-modal', showRegisterModal);
       window.removeEventListener('show-addplan-modal', showAddPlanModal);
+      window.removeEventListener('login-success', handleLoginSuccess);
     };
   }, []);
+
+  // Render active page based on navigation
+  const renderActivePage = () => {
+    switch (activeNav) {
+      case 'Dashboard':
+        return <HeroSection onPlanNewTrip={() => setModal('addplan')} />;
+      case 'My Trips':
+        return <MyTrips />;
+      case 'Profile':
+        return <Profile />;
+      default:
+        return <HeroSection onPlanNewTrip={() => setModal('addplan')} />;
+    }
+  };
 
   return (
     <>
       <Navbar onNavClick={setActiveNav} activeNav={activeNav} />
-      {activeNav === 'Dashboard' && (
-        <HeroSection onPlanNewTrip={() => setModal('addplan')} />
-      )}
+      
+      {/* Active Page Content */}
+      {renderActivePage()}
 
       {/* Modal for Login/Register/AddPlan */}
       {modal && (

@@ -4,11 +4,16 @@ import PropTypes from 'prop-types';
 const TripCard = ({ trip, onEdit, onDelete, onView }) => {
     const [imageError, setImageError] = useState(false);
 
+    // helper to check date validity
+    const isValidDate = (d) => d instanceof Date && !isNaN(d.getTime());
+
     // Calculate status badge
     const getStatusBadge = () => {
         const now = new Date();
         const startDate = new Date(trip.startDate);
         const endDate = new Date(trip.endDate);
+        const hasStart = isValidDate(startDate);
+        const hasEnd = isValidDate(endDate);
 
         if (trip.status === 'draft') {
             return { label: 'Draft', color: 'bg-gray-500' };
@@ -17,15 +22,22 @@ const TripCard = ({ trip, onEdit, onDelete, onView }) => {
             return { label: 'Planning', color: 'bg-purple-500' };
         }
         if (trip.status === 'confirmed') {
-            if (startDate > now) {
+            if (hasStart && startDate > now) {
                 const daysLeft = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
                 return { label: `${daysLeft} days left`, color: 'bg-orange-500' };
             }
             return { label: 'Confirmed', color: 'bg-green-500' };
         }
-        if (trip.status === 'completed' || endDate < now) {
+
+        if (trip.status === 'completed' || (hasEnd && endDate < now)) {
             return { label: 'Completed', color: 'bg-gray-600' };
         }
+
+        // If dates are missing, show a generic label
+        if (!hasStart && !hasEnd) {
+            return { label: 'Dates not set', color: 'bg-gray-400' };
+        }
+
         return { label: 'Upcoming', color: 'bg-blue-500' };
     };
 
@@ -36,6 +48,14 @@ const TripCard = ({ trip, onEdit, onDelete, onView }) => {
         const start = new Date(trip.startDate);
         const end = new Date(trip.endDate);
         const options = { month: 'short', day: 'numeric' };
+        const hasStart = isValidDate(start);
+        const hasEnd = isValidDate(end);
+
+        if (!hasStart && !hasEnd) return 'Dates not set';
+        if (hasStart && !hasEnd) return `${start.toLocaleDateString('en-US', options)}`;
+        if (!hasStart && hasEnd) return `${end.toLocaleDateString('en-US', options)}, ${end.getFullYear()}`;
+
+        // both valid
         return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}, ${end.getFullYear()}`;
     };
 
@@ -97,41 +117,41 @@ const TripCard = ({ trip, onEdit, onDelete, onView }) => {
                     </div>
                 </div>
 
-                                {/* Actions (only show if handlers are provided) */}
-                                {(onView || onEdit || onDelete) && (
-                                    <div className="flex gap-2">
-                                        {onView && (
-                                            <button
-                                                onClick={() => onView(trip)}
-                                                className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
-                                            >
-                                                View Trip
-                                            </button>
-                                        )}
-                                        {onEdit && (
-                                            <button
-                                                onClick={() => onEdit(trip)}
-                                                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                                                title="Edit"
-                                            >
-                                                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                            </button>
-                                        )}
-                                        {onDelete && (
-                                            <button
-                                                onClick={() => onDelete(trip)}
-                                                className="p-2 border border-gray-300 rounded-lg hover:bg-red-50 transition-colors"
-                                                title="Delete"
-                                            >
-                                                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                            </button>
-                                        )}
-                                    </div>
-                                )}
+                {/* Actions (only show if handlers are provided) */}
+                {(onView || onEdit || onDelete) && (
+                    <div className="flex gap-2">
+                        {onView && (
+                            <button
+                                onClick={() => onView(trip)}
+                                className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                            >
+                                View Trip
+                            </button>
+                        )}
+                        {onEdit && (
+                            <button
+                                onClick={() => onEdit(trip)}
+                                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                title="Edit"
+                            >
+                                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </button>
+                        )}
+                        {onDelete && (
+                            <button
+                                onClick={() => onDelete(trip)}
+                                className="p-2 border border-gray-300 rounded-lg hover:bg-red-50 transition-colors"
+                                title="Delete"
+                            >
+                                <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

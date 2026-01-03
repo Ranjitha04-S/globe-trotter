@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { userAPI } from '../services/api';
 import TripCard from '../components/TripCard/TripCard';
+import Button from '../components/common/Button';
+import notify from '../utils/notify';
 
 const Profile = () => {
     const [profile, setProfile] = useState(null);
@@ -41,9 +43,10 @@ const Profile = () => {
             const response = await userAPI.updateProfile(formData);
             setProfile(response.data.user);
             setIsEditing(false);
-            alert('Profile updated successfully!');
+            await notify.success('Profile updated', 'Your profile has been saved');
         } catch (err) {
-            alert(err.response?.data?.error || 'Failed to update profile');
+            const message = err.response?.data?.error || 'Failed to update profile';
+            notify.error('Update failed', message);
         }
     };
 
@@ -118,25 +121,14 @@ const Profile = () => {
                                             required
                                         />
                                         <div className="flex gap-2">
-                                            <button
-                                                type="submit"
-                                                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm"
-                                            >
-                                                Save
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => {
-                                                    setIsEditing(false);
-                                                    setFormData({
-                                                        name: profile.name,
-                                                        email: profile.email
-                                                    });
-                                                }}
-                                                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm"
-                                            >
-                                                Cancel
-                                            </button>
+                                            <Button type="submit" variant="primary">Save</Button>
+                                            <Button type="button" variant="solidBlack" onClick={() => {
+                                                setIsEditing(false);
+                                                setFormData({
+                                                    name: profile.name,
+                                                    email: profile.email
+                                                });
+                                            }}>Cancel</Button>
                                         </div>
                                     </form>
                                 )}
@@ -145,12 +137,7 @@ const Profile = () => {
 
                         {/* Edit Button */}
                         {!isEditing && (
-                            <button
-                                onClick={() => setIsEditing(true)}
-                                className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-                            >
-                                Edit Profile
-                            </button>
+                            <Button onClick={() => setIsEditing(true)} variant="primary" className="px-6 py-3">Edit Profile</Button>
                         )}
                     </div>
 
@@ -212,14 +199,7 @@ const Profile = () => {
                         <p className="text-gray-600 mb-6">
                             Start planning your first adventure!
                         </p>
-                        <button
-                            onClick={() =>
-                                window.dispatchEvent(new Event('show-addplan-modal'))
-                            }
-                            className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-                        >
-                            Create New Trip
-                        </button>
+                        <Button onClick={() => window.dispatchEvent(new Event('show-addplan-modal'))} variant="primary" className="px-6 py-3">Create New Trip</Button>
                     </div>
                 )}
             </div>

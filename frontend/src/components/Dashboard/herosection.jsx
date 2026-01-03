@@ -3,7 +3,7 @@ import { Plane, Plus } from 'lucide-react';
 
 export default function HeroSection({ onPlanNewTrip }) {
 	return (
-		<section className="w-full flex justify-center items-center mt-8 md:mt-12 px-2">
+		<section className="w-full flex justify-center items-center mt-24 md:mt-28 px-2">
 			<div className="relative w-full max-w-6xl rounded-3xl bg-gradient-to-br from-blue-500 via-indigo-400 to-pink-400 flex flex-col md:flex-row items-center md:items-stretch min-h-[300px] md:min-h-[320px] p-8 md:p-16 overflow-hidden">
 				{/* Left content */}
 				<div className="flex-1 flex flex-col justify-center z-10">

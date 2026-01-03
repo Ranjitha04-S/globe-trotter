@@ -1,12 +1,36 @@
-const express = require('express');
+
+import express from 'express';
+import multer from 'multer';
+import Trip from '../models/Trip.js';
+
 const router = express.Router();
-const Trip = require('../models/Trip');
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
 
 // Create a new trip
-router.post('/', async (req, res) => {
+router.post('/', upload.array('images', 10), async (req, res) => {
   try {
     const { name, destination, startDate, endDate, budget, description } = req.body;
-    const trip = new Trip({ name, destination, startDate, endDate, budget, description });
+    const images = req.files ? req.files.map(file => file.path) : [];
+    
+    const trip = new Trip({ 
+      name, 
+      destination, 
+      startDate, 
+      endDate, 
+      budget: Number(budget), 
+      description,
+      images 
+    });
     await trip.save();
     res.status(201).json({ message: 'Trip created successfully', trip });
   } catch (err) {
@@ -24,4 +48,4 @@ router.get('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

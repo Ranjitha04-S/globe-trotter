@@ -27,7 +27,7 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center min-h-screen" style={{ background: 'linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%)' }}>
-      <form className="bg-white p-6 rounded shadow w-80 border border-gray-200" onSubmit={handleLogin}>
+      <form className="bg-white p-6 rounded shadow w-80 border border-gray-200 mt-6 mb-6" onSubmit={handleLogin}>
         <h2 className="text-xl font-bold mb-4">Login</h2>
 
         <input
@@ -47,7 +47,7 @@ export default function Login() {
 
         {error && <div className="text-red-600 mb-2 text-center">{error}</div>}
 
-        <button className="bg-blue-600 text-white w-full py-2 rounded">
+        <button className="bg-blue-600 text-white w-full py-1.5 rounded">
           Login
         </button>
         <div className="mt-4 text-center">

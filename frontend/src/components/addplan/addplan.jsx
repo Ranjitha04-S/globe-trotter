@@ -10,6 +10,7 @@ export default function AddPlan({ onBack }) {
 		budget: '',
 		description: '',
 	});
+	const [images, setImages] = useState([]); // Array of File
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
@@ -19,30 +20,36 @@ export default function AddPlan({ onBack }) {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
+	const handleImageChange = (e) => {
+		setImages(Array.from(e.target.files));
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 		setError('');
 		setSuccess('');
 		try {
-			const res = await fetch('http://localhost:5000/api/trips', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					name: form.name,
-					destination: form.destination,
-					startDate: form.startDate,
-					endDate: form.endDate,
-					budget: Number(form.budget),
-					description: form.description,
-				}),
-			});
-			const data = await res.json();
-			if (!res.ok) throw new Error(data.error || 'Failed to create trip');
-			setSuccess('Trip created successfully!');
-			setShowSuccessPopup(true);
-			setForm({ name: '', destination: '', startDate: '', endDate: '', budget: '', description: '' });
-		} catch (err) {
+      // Always use FormData for consistency
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('destination', form.destination);
+      formData.append('startDate', form.startDate);
+      formData.append('endDate', form.endDate);
+      formData.append('budget', form.budget);
+      formData.append('description', form.description);
+      
+      // Add images if present
+      images.forEach((img) => {
+        formData.append('images', img);
+      });
+      
+      const res = await fetch('http://localhost:5000/api/trips', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await res.json();
 			setError(err.message);
 		} finally {
 			setLoading(false);
@@ -111,11 +118,28 @@ export default function AddPlan({ onBack }) {
 					<label className="block text-gray-700 font-medium mb-1">Budget (USD)</label>
 					<input name="budget" type="number" placeholder="2500" value={form.budget} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400" required />
 				</div>
-				{/* Description */}
-				<div>
-					<label className="block text-gray-700 font-medium mb-1">Description</label>
-					<textarea name="description" placeholder="Tell us about your trip plans..." value={form.description} onChange={handleChange} rows={3} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400 resize-none" />
-				</div>
+						{/* Description */}
+						<div>
+							<label className="block text-gray-700 font-medium mb-1">Description</label>
+							<textarea name="description" placeholder="Tell us about your trip plans..." value={form.description} onChange={handleChange} rows={3} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400 resize-none" />
+						</div>
+						{/* Images (optional) */}
+						<div>
+							<label className="block text-gray-700 font-medium mb-1">Images <span className="text-gray-400 font-normal">(optional)</span></label>
+							<input
+								type="file"
+								name="images"
+								accept="image/*"
+								multiple
+								onChange={handleImageChange}
+								className="block w-full text-gray-700 border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+							/>
+							{images.length > 0 && (
+								<div className="mt-2 text-sm text-gray-600">
+									Selected: {images.map(img => img.name).join(', ')}
+								</div>
+							)}
+						</div>
 				{/* Buttons */}
 				<div className="flex flex-col md:flex-row gap-4 mt-6">
 					<button

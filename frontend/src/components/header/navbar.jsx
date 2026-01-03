@@ -8,9 +8,11 @@ const navLinks = [
 	{ name: 'Explore', icon: <Search size={20} />, href: '#' },
 	{ name: 'Calendar', icon: <Calendar size={20} />, href: '#' },
 	{ name: 'Profile', icon: <User size={20} />, href: '#' },
+	{ name: 'Login', icon: null, href: '#', action: () => window.dispatchEvent(new CustomEvent('show-login-modal')) },
+	{ name: 'Register', icon: null, href: '#', action: () => window.dispatchEvent(new CustomEvent('show-register-modal')) },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onNavClick, activeNav }) {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	return (
@@ -33,9 +35,18 @@ export default function Navbar() {
 							<a
 								key={link.name}
 								href={link.href}
-								className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${idx === 0 ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'} `}
+								className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${activeNav === link.name ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+								onClick={e => {
+									if (link.action) {
+										e.preventDefault();
+										link.action();
+									} else {
+										e.preventDefault();
+										if (onNavClick) onNavClick(link.name);
+									}
+								}}
 							>
-								<span className="mr-2">{link.icon}</span>
+								{link.icon && <span className="mr-2">{link.icon}</span>}
 								<span>{link.name}</span>
 							</a>
 						))}
@@ -58,17 +69,26 @@ export default function Navbar() {
 			{menuOpen && (
 				<div className="md:hidden bg-white shadow-lg px-4 pb-4">
 					<div className="flex flex-col space-y-2 mt-2">
-						{navLinks.map((link, idx) => (
-							<a
-								key={link.name}
-								href={link.href}
-								className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${idx === 0 ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'} `}
-								onClick={() => setMenuOpen(false)}
-							>
-								<span className="mr-2">{link.icon}</span>
-								<span>{link.name}</span>
-							</a>
-						))}
+								{navLinks.map((link, idx) => (
+									<a
+										key={link.name}
+										href={link.href}
+										className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${activeNav === link.name ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+										onClick={e => {
+											setMenuOpen(false);
+											if (link.action) {
+												e.preventDefault();
+												link.action();
+											} else {
+												e.preventDefault();
+												if (onNavClick) onNavClick(link.name);
+											}
+										}}
+									>
+										{link.icon && <span className="mr-2">{link.icon}</span>}
+										<span>{link.name}</span>
+									</a>
+								))}
 					</div>
 				</div>
 			)}

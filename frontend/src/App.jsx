@@ -54,7 +54,7 @@ function App() {
   return (
     <>
       <Navbar onNavClick={setActiveNav} activeNav={activeNav} />
-      
+
       {/* Active Page Content */}
       {renderActivePage()}
 

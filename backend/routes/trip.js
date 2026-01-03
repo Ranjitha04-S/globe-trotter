@@ -22,14 +22,14 @@ router.post('/', protect, upload.array('images', 10), async (req, res) => {
   try {
     const { name, destination, startDate, endDate, budget, description, status, stops, travelers } = req.body;
     const images = req.files ? req.files.map(file => file.path) : [];
-    
-    const trip = new Trip({ 
+
+    const trip = new Trip({
       userId: req.user.id,
-      name, 
-      destination, 
-      startDate, 
-      endDate, 
-      budget: Number(budget), 
+      name,
+      destination,
+      startDate,
+      endDate,
+      budget: Number(budget),
       description,
       images,
       status: status || 'planning',
@@ -48,7 +48,7 @@ router.get('/', protect, async (req, res) => {
   try {
     const { search, status, sortBy } = req.query;
     let query = { userId: req.user.id };
-    
+
     // Search filter
     if (search) {
       query.$or = [
@@ -57,14 +57,14 @@ router.get('/', protect, async (req, res) => {
         { description: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     // Status filter
     if (status) {
       query.status = status;
     }
-    
+
     let trips = Trip.find(query);
-    
+
     // Sorting
     if (sortBy === 'date') {
       trips = trips.sort({ startDate: -1 });
@@ -73,7 +73,7 @@ router.get('/', protect, async (req, res) => {
     } else {
       trips = trips.sort({ createdAt: -1 });
     }
-    
+
     const result = await trips;
     res.json(result);
   } catch (err) {
@@ -98,32 +98,32 @@ router.get('/:id', protect, async (req, res) => {
 router.put('/:id', protect, upload.array('images', 10), async (req, res) => {
   try {
     const { name, destination, startDate, endDate, budget, description, status, stops, travelers } = req.body;
-    const updateData = { 
-      name, 
-      destination, 
-      startDate, 
-      endDate, 
-      budget: Number(budget), 
+    const updateData = {
+      name,
+      destination,
+      startDate,
+      endDate,
+      budget: Number(budget),
       description,
       status,
       stops,
       travelers
     };
-    
+
     if (req.files && req.files.length > 0) {
       updateData.images = req.files.map(file => file.path);
     }
-    
+
     const trip = await Trip.findOneAndUpdate(
       { _id: req.params.id, userId: req.user.id },
       updateData,
       { new: true }
     );
-    
+
     if (!trip) {
       return res.status(404).json({ error: 'Trip not found' });
     }
-    
+
     res.json({ message: 'Trip updated successfully', trip });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update trip', details: err.message });

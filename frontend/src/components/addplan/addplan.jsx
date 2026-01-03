@@ -45,12 +45,12 @@ export default function AddPlan({ onBack }) {
 			formData.append('status', form.status);
 			formData.append('stops', form.stops);
 			formData.append('travelers', form.travelers);
-			
+
 			// Add images if present
 			images.forEach((img) => {
 				formData.append('images', img);
 			});
-			
+
 			await tripAPI.create(formData);
 			setShowSuccessPopup(true);
 			// Reset form
@@ -83,7 +83,7 @@ export default function AddPlan({ onBack }) {
 							<X size={24} />
 						</button>
 						<div className="flex flex-col items-center gap-3">
-							<svg width="48" height="48" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#22c55e"/><path d="M7 13l3 3 7-7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+							<svg width="48" height="48" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#22c55e" /><path d="M7 13l3 3 7-7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
 							<h3 className="text-xl font-semibold text-green-700">Trip Created!</h3>
 							<p className="text-gray-700 text-center">Your trip has been added successfully.</p>
 							<button
@@ -135,7 +135,7 @@ export default function AddPlan({ onBack }) {
 					<label className="block text-gray-700 font-medium mb-1">Budget (USD)</label>
 					<input name="budget" type="number" placeholder="2500" value={form.budget} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400" required />
 				</div>
-				
+
 				{/* Additional Fields */}
 				<div className="flex flex-col md:flex-row gap-4">
 					<div className="flex-1">
@@ -147,7 +147,7 @@ export default function AddPlan({ onBack }) {
 						<input name="travelers" type="number" min="1" placeholder="1" value={form.travelers} onChange={handleChange} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400" />
 					</div>
 				</div>
-				
+
 				{/* Status */}
 				<div>
 					<label className="block text-gray-700 font-medium mb-1">Trip Status</label>
@@ -158,28 +158,28 @@ export default function AddPlan({ onBack }) {
 						<option value="completed">Completed</option>
 					</select>
 				</div>
-						{/* Description */}
-						<div>
-							<label className="block text-gray-700 font-medium mb-1">Description</label>
-							<textarea name="description" placeholder="Tell us about your trip plans..." value={form.description} onChange={handleChange} rows={3} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400 resize-none" />
+				{/* Description */}
+				<div>
+					<label className="block text-gray-700 font-medium mb-1">Description</label>
+					<textarea name="description" placeholder="Tell us about your trip plans..." value={form.description} onChange={handleChange} rows={3} className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 text-gray-700 placeholder-gray-400 resize-none" />
+				</div>
+				{/* Images (optional) */}
+				<div>
+					<label className="block text-gray-700 font-medium mb-1">Images <span className="text-gray-400 font-normal">(optional)</span></label>
+					<input
+						type="file"
+						name="images"
+						accept="image/*"
+						multiple
+						onChange={handleImageChange}
+						className="block w-full text-gray-700 border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+					/>
+					{images.length > 0 && (
+						<div className="mt-2 text-sm text-gray-600">
+							Selected: {images.map(img => img.name).join(', ')}
 						</div>
-						{/* Images (optional) */}
-						<div>
-							<label className="block text-gray-700 font-medium mb-1">Images <span className="text-gray-400 font-normal">(optional)</span></label>
-							<input
-								type="file"
-								name="images"
-								accept="image/*"
-								multiple
-								onChange={handleImageChange}
-								className="block w-full text-gray-700 border border-gray-200 rounded-lg px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-							/>
-							{images.length > 0 && (
-								<div className="mt-2 text-sm text-gray-600">
-									Selected: {images.map(img => img.name).join(', ')}
-								</div>
-							)}
-						</div>
+					)}
+				</div>
 				{/* Buttons */}
 				<div className="flex flex-col md:flex-row gap-4 mt-6">
 					<button

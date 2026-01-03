@@ -101,26 +101,26 @@ export default function Navbar({ onNavClick, activeNav }) {
 			{menuOpen && (
 				<div className="md:hidden bg-white shadow-lg px-4 pb-4">
 					<div className="flex flex-col space-y-2 mt-2">
-								{navLinks.map((link, idx) => (
-									<a
-										key={link.name}
-										href={link.href}
-										className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${activeNav === link.name ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
-										onClick={e => {
-											setMenuOpen(false);
-											if (link.action) {
-												e.preventDefault();
-												link.action();
-											} else {
-												e.preventDefault();
-												if (onNavClick) onNavClick(link.name);
-											}
-										}}
-									>
-										{link.icon && <span className="mr-2">{link.icon}</span>}
-										<span>{link.name}</span>
-									</a>
-								))}
+						{navLinks.map((link, idx) => (
+							<a
+								key={link.name}
+								href={link.href}
+								className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${activeNav === link.name ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+								onClick={e => {
+									setMenuOpen(false);
+									if (link.action) {
+										e.preventDefault();
+										link.action();
+									} else {
+										e.preventDefault();
+										if (onNavClick) onNavClick(link.name);
+									}
+								}}
+							>
+								{link.icon && <span className="mr-2">{link.icon}</span>}
+								<span>{link.name}</span>
+							</a>
+						))}
 					</div>
 				</div>
 			)}

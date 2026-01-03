@@ -11,10 +11,10 @@ const tripSchema = new mongoose.Schema({
   budget: { type: Number, required: true },
   description: { type: String },
   images: [{ type: String }],
-  status: { 
-    type: String, 
-    enum: ['planning', 'confirmed', 'completed', 'draft'], 
-    default: 'planning' 
+  status: {
+    type: String,
+    enum: ['planning', 'confirmed', 'completed', 'draft'],
+    default: 'planning'
   },
   stops: { type: Number, default: 1 },
   travelers: { type: Number, default: 1 }

@@ -34,7 +34,7 @@ export default function Navbar({ onNavClick, activeNav }) {
 	const authedLinks = [
 		{ name: 'Dashboard', icon: <Home size={20} />, href: '#' },
 		{ name: 'My Trips', icon: <Map size={20} />, href: '#' },
-		{ name: 'Profile', icon: <User size={20} />, href: '#' },
+		{ name: 'Profile', icon: <User size={22} />, href: '#', iconOnly: true },
 		{ name: 'Logout', icon: null, href: '#', action: handleLogout },
 	];
 
@@ -76,8 +76,14 @@ export default function Navbar({ onNavClick, activeNav }) {
 									}
 								}}
 							>
-								{link.icon && <span className="mr-2">{link.icon}</span>}
-								<span>{link.name}</span>
+								{link.icon && (
+									link.iconOnly ? (
+										<span>{link.icon}</span>
+									) : (
+										<span className="mr-2">{link.icon}</span>
+									)
+								)}
+								{!link.iconOnly && <span>{link.name}</span>}
 							</a>
 						))}
 					</div>

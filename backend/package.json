@@ -7,8 +7,13 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^4.22.1",
-    "mongoose": "^7.8.8"
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^7.8.8",
+    "nodemailer": "^7.0.12"
   },
   "devDependencies": {
     "nodemon": "^3.0.0"

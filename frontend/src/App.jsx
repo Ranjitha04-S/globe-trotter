@@ -1,42 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Navbar from './components/header/navbar'
-import HeroSection from './components/Dashboard/herosection'
-import AddPlan from './components/addplan/addplan'
+
 import './App.css'
-
-
-const navNames = ['Dashboard', 'My Trips', 'Explore', 'Calendar', 'Profile'];
+import Login from './components/Login/Login'
+import Register from './components/Login/Register'
+import { useEffect } from 'react';
 
 function App() {
-  const [activeNav, setActiveNav] = useState('Dashboard');
-  const [showAddPlan, setShowAddPlan] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
 
-  const handlePlanNewTrip = () => setShowAddPlan(true);
-  const handleCloseAddPlan = () => setShowAddPlan(false);
+  useEffect(() => {
+    const showRegister = () => setShowLogin(false);
+    const showLogin = () => setShowLogin(true);
+    window.addEventListener('show-register', showRegister);
+    window.addEventListener('show-login', showLogin);
+    return () => {
+      window.removeEventListener('show-register', showRegister);
+      window.removeEventListener('show-login', showLogin);
+    };
+  }, []);
 
   return (
-    <>
-      <Navbar onNavClick={setActiveNav} activeNav={activeNav} />
-      <main className="pt-20">
-        {activeNav === 'Dashboard' && <HeroSection onPlanNewTrip={handlePlanNewTrip} />}
-        {activeNav !== 'Dashboard' && (
-          <div className="w-full flex justify-center items-center min-h-[300px]">
-            <h2 className="text-2xl text-gray-700 font-semibold">{activeNav} page coming soon...</h2>
-          </div>
+    <div>
+      {showLogin ? <Login /> : <Register />}
+      <div className="flex justify-center mt-4">
+        {showLogin ? (
+          <span>
+            Don't have an account?{' '}
+            <button className="text-blue-600 underline" onClick={() => setShowLogin(false)}>
+              Register
+            </button>
+          </span>
+        ) : (
+          <span>
+            Already have an account?{' '}
+            <button className="text-blue-600 underline" onClick={() => setShowLogin(true)}>
+              Login
+            </button>
+          </span>
         )}
-        {/* Modal for AddPlan */}
-        {showAddPlan && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-            <div className="relative w-full max-w-2xl mx-auto">
-              <AddPlan onBack={handleCloseAddPlan} />
-            </div>
-          </div>
-        )}
-      </main>
-    </>
+      </div>
+    </div>
   );
 }
 
-export default App
+export default App;

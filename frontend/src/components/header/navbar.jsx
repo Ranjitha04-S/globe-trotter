@@ -34,8 +34,6 @@ export default function Navbar({ onNavClick, activeNav }) {
 	const authedLinks = [
 		{ name: 'Dashboard', icon: <Home size={20} />, href: '#' },
 		{ name: 'My Trips', icon: <Map size={20} />, href: '#' },
-		{ name: 'Explore', icon: <Search size={20} />, href: '#' },
-		{ name: 'Calendar', icon: <Calendar size={20} />, href: '#' },
 		{ name: 'Profile', icon: <User size={20} />, href: '#' },
 		{ name: 'Logout', icon: null, href: '#', action: handleLogout },
 	];

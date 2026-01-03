@@ -60,8 +60,8 @@ function App() {
 
       {/* Modal for Login/Register/AddPlan */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className={`relative w-full ${modal === 'addplan' ? 'max-w-2xl' : 'max-w-md'} mx-auto`}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray bg-opacity-30 backdrop-blur-sm">
+          <div className={`relative w-full ${modal === 'addplan' ? 'max-w-2xl' : (modal === 'login' || modal === 'register') ? 'max-w-4xl' : 'max-w-md'} mx-auto`}>
             <button
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-2xl font-bold z-10"
               onClick={() => setModal(null)}
@@ -69,7 +69,7 @@ function App() {
             >
               &times;
             </button>
-            <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
               {modal === 'login' && <Login />}
               {modal === 'register' && <Register />}
               {modal === 'addplan' && <AddPlan onBack={() => setModal(null)} />}

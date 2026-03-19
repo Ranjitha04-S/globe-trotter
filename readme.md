@@ -148,10 +148,10 @@ POST   /api/auth/login      Login
  
 | Member | Role |
 |---|---|
-| Ranjitha S | Team Member |
-| Member 2 | Team Member |
-| Member 3 | Team Member |
-| Member 4 | Team Member |
+| Ranjitha S | backend |
+| Member 2 | backend |
+| Member 3 | frontend |
+| Member 4 | frontend |
  
 ---
  

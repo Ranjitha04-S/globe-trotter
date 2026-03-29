@@ -213,7 +213,7 @@ PLANNING → CONFIRMED → ONGOING → COMPLETED
 
 | Member    | Role             |
 |-----------|------------------|
-| Member 1  | Backend (Java)   |
+| Ranjitha (me)  | Backend (Java)   |
 | Member 2  | Backend (Java)   |
 | Member 3  | Frontend (React) |
 | Member 4  | Frontend (React) |

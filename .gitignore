@@ -1,0 +1,17 @@
+# Maven build folder
+backend/target/
+
+# Node modules
+frontend/node_modules/
+
+# Environment files
+backend/src/main/resources/application.properties
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db

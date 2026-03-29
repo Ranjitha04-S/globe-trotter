@@ -1,0 +1,129 @@
+.detail-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.detail-actions { display: flex; gap: 10px; }
+.back-btn { font-size: 13px; padding: 7px 14px; }
+
+.detail-header {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+.detail-title       { font-size: 26px; font-weight: 700; flex: 1; }
+.detail-destination { color: var(--text-muted); font-size: 15px; width: 100%; }
+
+.edit-title-input {
+  font-size: 22px;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  width: 100%;
+  flex: 1;
+}
+.edit-dest-input {
+  font-size: 15px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  width: 100%;
+}
+.edit-fields { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* ─── Info list ──────────────────────────────────────────────────────────── */
+.detail-info h2,
+.detail-flights h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+
+.info-list { display: flex; flex-direction: column; gap: 10px; }
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.info-row:last-child { border-bottom: none; }
+.info-row > span:first-child { color: var(--text-muted); flex-shrink: 0; }
+.info-row > span:last-child  { text-align: right; font-weight: 500; }
+.info-row.desc > span:last-child { text-align: left; color: var(--text-muted); }
+
+.edit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* ─── Flights ─────────────────────────────────────────────────────────────── */
+.flights-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.no-flights {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.booking-list { display: flex; flex-direction: column; gap: 12px; }
+
+.booking-item {
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.booking-route {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+.route-arrow { color: var(--primary); }
+
+.booking-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+}
+.booking-meta span { color: var(--text-muted); }
+
+.seat-class-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.seat-class-badge.ECONOMY  { background: #dbeafe; color: #1e40af; }
+.seat-class-badge.BUSINESS { background: #fef3c7; color: #92400e; }
+.seat-class-badge.FIRST    { background: #fce7f3; color: #9d174d; }
+
+.cancel-booking-btn { font-size: 12px; padding: 4px 10px; align-self: flex-end; }
+
+@media (max-width: 700px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .edit-form-grid { grid-template-columns: 1fr; }
+}
